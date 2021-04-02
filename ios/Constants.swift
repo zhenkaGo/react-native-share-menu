@@ -28,6 +28,9 @@ public let COULD_NOT_FIND_ITEM_ERROR = "Couldn't find item attached to this shar
 // MARK: Keys
 
 public let USER_DEFAULTS_KEY = "ShareMenuUserDefaults"
+public let USER_DEFAULTS_TEXT_KEY = "ShareMenuUserDefaultsText"
+public let USER_DEFAULTS_URL_KEY = "ShareMenuUserDefaultsUrl"
+public let USER_DEFAULTS_FILE_KEY = "ShareMenuUserDefaultsFile"
 public let USER_DEFAULTS_EXTRA_DATA_KEY = "ShareMenuUserDefaultsExtraData"
 public let URL_SCHEME_INFO_PLIST_KEY = "AppURLScheme"
 public let HOST_APP_IDENTIFIER_INFO_PLIST_KEY = "HostAppBundleIdentifier"

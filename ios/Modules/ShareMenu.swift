@@ -9,7 +9,7 @@ class ShareMenu: RCTEventEmitter {
         }
     }
 
-    var sharedData: [String:String]?
+    var sharedData: [String:Any]?
 
     static var initialShare: (UIApplication, URL, [UIApplication.OpenURLOptionsKey : Any])?
 
@@ -57,10 +57,10 @@ class ShareMenu: RCTEventEmitter {
             initialShare = (app, url, options)
             return
         }
-        
+
         ShareMenu.shared.share(application: app, openUrl: url, options: options)
     }
-    
+
     func share(
         application app: UIApplication,
         openUrl url: URL,
@@ -90,12 +90,21 @@ class ShareMenu: RCTEventEmitter {
         }
 
         let extraData = userDefaults.object(forKey: USER_DEFAULTS_EXTRA_DATA_KEY) as? [String:Any]
-
-        if let data = userDefaults.object(forKey: USER_DEFAULTS_KEY) as? [String:String] {
-            sharedData = data
-            dispatchEvent(with: data, and: extraData)
-            userDefaults.removeObject(forKey: USER_DEFAULTS_KEY)
+        var data: [String:Any] = [String:Any]()
+        if let text = userDefaults.object(forKey: USER_DEFAULTS_TEXT_KEY) as? [String:String] {
+            data["text"] = text
         }
+        if let url = userDefaults.object(forKey: USER_DEFAULTS_URL_KEY) as? [String:String] {
+            data["url"] = url
+        }
+        if let file = userDefaults.object(forKey: USER_DEFAULTS_FILE_KEY) as? [String:String] {
+            data["file"] = file
+        }
+        sharedData = data
+        dispatchEvent(with: data, and: extraData)
+        userDefaults.removeObject(forKey: USER_DEFAULTS_TEXT_KEY)
+        userDefaults.removeObject(forKey: USER_DEFAULTS_URL_KEY)
+        userDefaults.removeObject(forKey: USER_DEFAULTS_FILE_KEY)
     }
 
     @objc(getSharedText:)
@@ -114,15 +123,15 @@ class ShareMenu: RCTEventEmitter {
         callback([data as Any])
         sharedData = nil
     }
-    
-    func dispatchEvent(with data: [String:String], and extraData: [String:Any]?) {
+
+    func dispatchEvent(with data: [String:Any], and extraData: [String:Any]?) {
         guard hasListeners else { return }
 
         var finalData = data as [String:Any]
         if (extraData != nil) {
             finalData[EXTRA_DATA_KEY] = extraData
         }
-        
+
         sendEvent(withName: NEW_SHARE_EVENT, body: finalData)
     }
 }
